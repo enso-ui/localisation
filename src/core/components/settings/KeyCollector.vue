@@ -1,5 +1,5 @@
 <script>
-import { mapMutations, mapState } from 'vuex';
+import { useStore } from '../../utils/pinia';
 
 export default {
     name: 'KeyCollector',
@@ -8,10 +8,16 @@ export default {
         collect: false,
     }),
 
-    computed: mapState(['meta']),
+    computed: {
+        meta() {
+            return useStore('app').meta;
+        },
+    },
 
     methods: {
-        ...mapMutations('localisation', ['setKeyCollector']),
+        setKeyCollector(state) {
+            useStore('localisation').setKeyCollector(state);
+        },
     },
 
     render() {

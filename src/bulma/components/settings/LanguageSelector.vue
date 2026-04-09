@@ -9,7 +9,7 @@
                     </div>
                 </div>
                 <div class="level-right">
-                    <div class="level-item language-selector">
+                    <div class="level-item language-selector settings-control-select">
                         <dropdown>
                             <template #label>
                                 <span class="icon">
@@ -48,18 +48,11 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './flags/flags';
+    @use './flags/flags';
 
     .language-selector {
         .button .icon:first-child {
-            margin: unset;
-        }
-
-        .dropdown .dropdown-content {
-            width: 4.6em;
-            .dropdown-item {
-                text-align: center;
-            }
+            margin: 0;
         }
     }
 </style>

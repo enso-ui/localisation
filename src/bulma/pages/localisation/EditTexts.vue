@@ -1,98 +1,91 @@
 <template>
     <div class="wrapper">
-        <div class="columns is-multiline">
-            <div class="column">
-                <div class="columns is-multiline">
-                    <div class="column is-half">
+        <div class="columns is-variable is-5 is-multiline edit-texts-header">
+            <div class="column is-8-desktop">
+                <div class="columns is-multiline is-vcentered">
+                    <div class="column is-half-desktop">
                         <enso-select :options="locales"
                             v-model="selectedLocale"
                             @update:model-value="getLangFile()"
                             :placeholder="i18n('Choose language')"/>
                     </div>
                     <fade>
-                        <div class="column is-half has-text-right is-hidden-mobile"
-                             v-if="selectedLocale">
-                            <p class="pt-1">
+                        <div class="column is-half-desktop has-text-right-desktop"
+                            v-if="selectedLocale">
+                            <p class="edit-texts-key-count">
                                 <b>{{ keysCount }}</b> {{ i18n('keys found') }}
                             </p>
                         </div>
                     </fade>
-                    <fade>
-                        <div class="column"
-                            v-if="selectedLocale">
-                            <div class="field">
-                                <p class="control has-icons-left has-icons-right">
-                                    <input type="text"
-                                    class="input is-rounded"
-                                    v-focus
-                                    v-select-on-focus
-                                    :placeholder="i18n('Search')"
-                                    v-model="query"
-                                    @keyup.enter="isNewKey ? addKey() : focusIt(null)">
-                                    <span class="icon is-small is-left">
-                                    <fa icon="search"/>
-                                </span>
-                                    <span class="icon is-small is-right clear-button"
-                                        v-if="query"
-                                        @click="query = null">
-                                    <a class="delete is-small"/>
-                                </span>
-                                </p>
-                            </div>
-                        </div>
-                    </fade>
                 </div>
             </div>
-            <div class="column">
-                <div class="columns is-mobile has-text-centered">
-                    <div class="column is-half"
-                        v-if="selectedLocale">
-                        <button class="button is-success is-fullwidth"
-                            v-if="isNewKey"
-                            @click="addKey()">
-                            {{ i18n('Add Key') }}
-                        </button>
-                    </div>
-                    <div class="column is-half"
-                        v-if="!selectedLocale && meta.env === 'local'">
-                        <button class="button is-warning"
-                            @click="merge()"
-                            v-if="canAccess('system.localisation.merge')">
-                            {{ i18n('Merge all localisation files') }}
-                        </button>
-                    </div>
-                    <div class="column is-half"
-                        v-if="selectedLocale">
-                        <button @click="saveLangFile()"
-                            class="button is-success is-fullwidth"
-                            :class="{ 'is-loading': loading }">
-                            {{ i18n('Update') }}
-                        </button>
+            <div class="column is-4-desktop">
+                <div class="edit-texts-actions">
+                    <button class="button is-outlined is-info"
+                        v-if="selectedLocale && isNewKey"
+                        @click="addKey()">
+                        {{ i18n('Add Key') }}
+                    </button>
+                    <button class="button is-warning is-fullwidth"
+                        v-if="!selectedLocale && meta.env === 'local'
+                            && canAccess('system.localisation.merge')"
+                        @click="merge()">
+                        {{ i18n('Merge all localisation files') }}
+                    </button>
+                    <button @click="saveLangFile()"
+                        v-if="selectedLocale"
+                        :class="['button is-success', { 'is-loading': loading }]">
+                        {{ i18n('Update') }}
+                    </button>
+                </div>
+            </div>
+            <fade>
+                <div class="column is-7-desktop"
+                    v-if="selectedLocale">
+                    <div class="field edit-texts-search">
+                        <p class="control has-icons-left has-icons-right">
+                            <input id="search-input"
+                                type="text"
+                                class="input is-rounded"
+                                v-focus
+                                v-select-on-focus
+                                :placeholder="i18n('Search')"
+                                v-model="query"
+                                @keyup.enter="isNewKey ? addKey() : focusIt(null)">
+                            <span class="icon is-small is-left has-text-muted">
+                                <fa :icon="icons.search"/>
+                            </span>
+                            <span class="icon is-small is-right clear-button has-text-muted is-clickable"
+                                v-if="query"
+                                @click="query = null">
+                                <a class="delete is-small"/>
+                            </span>
+                        </p>
                     </div>
                 </div>
-                <div class="columns is-mobile has-text-right"
+            </fade>
+            <fade>
+                <div class="column is-5-desktop"
                     v-if="selectedLocale">
-                    <div class="column">
-                        <label class="label">
-                            {{ i18n('Core') }}
+                    <div class="edit-texts-filters">
+                        <label class="edit-texts-filter">
+                            <span>{{ i18n('Core') }}</span>
                             <vue-switch class="mx-2"
                                 v-model="filterCore"
                                 size="is-large"/>
-                            {{ i18n('App') }}
+                            <span>{{ i18n('App') }}</span>
                         </label>
-                    </div>
-                    <div class="column">
-                        <label class="label">
-                            {{ i18n('Only missing') }}
+                        <label class="edit-texts-filter">
+                            <span>{{ i18n('Only missing') }}</span>
                             <vue-switch class="ml-2"
                                 v-model="filterMissing"
                                 size="is-large"/>
                         </label>
                     </div>
                 </div>
-            </div>
+            </fade>
         </div>
-        <div class="box has-background-light raises-on-hover mt-3"
+        <div class="box localisation-texts-box mt-3"
             v-if="selectedLocale">
             <div class="columns is-hidden-mobile has-shadow-bottom"
                 v-if="filteredKeys.length">
@@ -114,7 +107,7 @@
                 </h5>
             </div>
             <div :style="styleObject">
-                <div class="columns"
+                <div class="columns localisation-texts-row"
                     :key="index"
                     v-for="(key, index) in filteredKeys">
                     <div class="column is-half">
@@ -134,7 +127,7 @@
                                 <a class="button is-outlined is-danger"
                                     @click="removeKey(key)">
                                     <span class="icon is-small">
-                                        <fa icon="trash-alt"/>
+                                        <fa :icon="icons.delete"/>
                                     </span>
                                 </a>
                             </p>
@@ -148,15 +141,12 @@
 
 <script>
 import { Fade } from '@enso-ui/transitions';
-import { mapState } from 'vuex';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
-import { library } from '@fortawesome/fontawesome-svg-core';
-import { faSearch, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { focus, selectOnFocus } from '@enso-ui/directives';
 import { EnsoSelect } from '@enso-ui/select/bulma';
 import VueSwitch from '@enso-ui/switch/bulma';
-
-library.add(faSearch, faTrashAlt);
+import { useStore } from '../../../utils/pinia';
 
 export default {
     name: 'EditTexts',
@@ -170,6 +160,10 @@ export default {
     inject: ['canAccess', 'errorHandler', 'i18n', 'http', 'route', 'toastr'],
 
     data: () => ({
+        icons: {
+            delete: faTrashCan,
+            search: faSearch,
+        },
         langFile: {},
         originalLangFile: {},
         locales: [],
@@ -182,8 +176,12 @@ export default {
     }),
 
     computed: {
-        ...mapState('layout', ['isMobile']),
-        ...mapState(['meta']),
+        isMobile() {
+            return useStore('layout').isMobile;
+        },
+        meta() {
+            return useStore('app').meta;
+        },
         styleObject() {
             return {
                 'max-height': this.boxHeight,
@@ -320,12 +318,175 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    .wrapper {
+        :deep(.vue-select) {
+            --enso-select-dropdown-surface: var(--bulma-scheme-main-bis);
+            --enso-select-item-hover-surface: color-mix(
+                in srgb,
+                var(--bulma-scheme-main-ter) 86%,
+                var(--bulma-primary) 14%
+            );
+        }
+
+        :deep(.input::placeholder) {
+            color: var(--bulma-text-light);
+            opacity: 0.8;
+        }
+    }
+
+    .edit-texts-header {
+        align-items: end;
+    }
+
+    .edit-texts-key-count {
+        color: var(--bulma-text-strong);
+        line-height: 2.75rem;
+        margin: 0;
+    }
+
+    .edit-texts-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.75rem;
+        justify-content: flex-end;
+
+        .button {
+            min-width: 10rem;
+        }
+    }
+
+    .edit-texts-search {
+        margin-bottom: 0;
+
+        .input {
+            min-height: 2.55rem;
+            padding-left: 2.55rem;
+            padding-right: 2.55rem;
+        }
+    }
+
+    .edit-texts-filters {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1.5rem;
+        justify-content: flex-end;
+        min-height: 3rem;
+    }
+
+    .edit-texts-filter {
+        align-items: center;
+        color: var(--bulma-text-strong);
+        display: inline-flex;
+        gap: 0.5rem;
+        margin: 0;
+        white-space: nowrap;
+    }
+
+    .edit-texts-filter :deep(.vue-switch) {
+        .control-label {
+            color: var(--bulma-text-strong);
+        }
+
+        .control-switch {
+            background-color: color-mix(
+                in srgb,
+                var(--bulma-scheme-main) 82%,
+                var(--bulma-border)
+            );
+            border-color: color-mix(
+                in srgb,
+                var(--bulma-scheme-main) 82%,
+                var(--bulma-border)
+            );
+
+            &:before {
+                background-color: color-mix(
+                    in srgb,
+                    var(--bulma-scheme-main-ter) 80%,
+                    var(--bulma-border)
+                );
+            }
+
+            &:after {
+                background-color: var(--bulma-text-strong);
+                box-shadow: none;
+            }
+
+            &.checked {
+                background-color: var(--bulma-primary);
+                border-color: var(--bulma-primary);
+            }
+        }
+    }
+
+    .localisation-texts-box {
+        padding: 1rem 1rem 1.25rem;
+
+        .title,
+        .subtitle {
+            color: var(--bulma-text-strong);
+        }
+
+        .input {
+            background-color: var(--bulma-scheme-main);
+            border-color: color-mix(
+                in srgb,
+                var(--bulma-border) 78%,
+                transparent
+            );
+            box-shadow: none;
+            color: var(--bulma-text-strong);
+        }
+
+        .input[readonly] {
+            background-color: color-mix(
+                in srgb,
+                var(--bulma-scheme-main) 84%,
+                var(--bulma-scheme-main-ter)
+            );
+            color: var(--bulma-text);
+        }
+
+        .field.has-addons .button.is-outlined.is-danger {
+            background-color: color-mix(
+                in srgb,
+                var(--bulma-danger) 8%,
+                var(--bulma-scheme-main-bis)
+            );
+            border-color: color-mix(
+                in srgb,
+                var(--bulma-danger) 40%,
+                var(--bulma-border)
+            );
+            color: var(--bulma-danger);
+            min-width: 3rem;
+        }
+    }
+
+    .localisation-texts-row {
+        align-items: center;
+        margin-bottom: 0.25rem;
+    }
+
     .has-shadow-bottom {
-        -webkit-box-shadow: 0px 3px 5px -4px lightgray;
-        box-shadow: 0px 3px 5px -4px lightgray;
+        -webkit-box-shadow: inset 0 -1px 0 var(--bulma-border);
+        box-shadow: inset 0 -1px 0 var(--bulma-border);
     }
 
     .icon.clear-button {
         pointer-events: all;
+    }
+
+    @media (max-width: 1023px) {
+        .edit-texts-actions,
+        .edit-texts-filters {
+            justify-content: flex-start;
+        }
+
+        .edit-texts-key-count {
+            line-height: 1.5;
+            text-align: left;
+        }
     }
 </style>

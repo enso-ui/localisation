@@ -1,19 +1,25 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { useStore } from '../../utils/pinia';
 
 export default {
     name: 'LanguageSelector',
 
     computed: {
-        ...mapState('localisation', ['languages']),
-        ...mapGetters('preferences', ['lang']),
+        languages() {
+            return useStore('localisation').languages;
+        },
+        lang() {
+            return useStore('preferences').global.lang;
+        },
         multiLanguage() {
             return Object.keys(this.languages).length > 1;
         },
     },
 
     methods: {
-        ...mapActions('preferences', ['setLang']),
+        setLang(lang) {
+            return useStore('preferences').setLang(lang);
+        },
     },
 
     render() {

@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapMutations } from 'vuex';
+import { useStore } from '../../utils/pinia';
 
 export default {
     name: 'MissingKeys',
@@ -11,8 +11,15 @@ export default {
     }),
 
     computed: {
-        ...mapState('localisation', ['keyCollector', 'missingKeys']),
-        ...mapState('layout', ['isTouch']),
+        keyCollector() {
+            return useStore('localisation').keyCollector;
+        },
+        missingKeys() {
+            return useStore('localisation').missingKeys;
+        },
+        isTouch() {
+            return useStore('layout').isTouch;
+        },
         count() {
             return this.missingKeys.length;
         },
@@ -23,7 +30,12 @@ export default {
     },
 
     methods: {
-        ...mapMutations('localisation', ['addKey', 'clearMissingKeys']),
+        addKey(key) {
+            useStore('localisation').addKey(key);
+        },
+        clearMissingKeys() {
+            useStore('localisation').clearMissingKeys();
+        },
         persist() {
             this.http.patch(
                 this.route('system.localisation.addKey'),
