@@ -1,5 +1,5 @@
 <script>
-import { useStore } from '../../utils/pinia';
+import { useStore } from '../../../utils/pinia';
 
 export default {
     name: 'MissingKeys',
