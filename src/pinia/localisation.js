@@ -3,7 +3,7 @@ import { useStore } from '../utils/pinia';
 
 export const localisation = defineStore('localisation', {
     state: () => ({
-        i18n: {},
+        messages: {},
         languages: [],
         rtlLanguages: [],
         keyCollector: false,
@@ -14,30 +14,47 @@ export const localisation = defineStore('localisation', {
         documentTitle: state => title => {
             const { global } = useStore('preferences');
             const { meta } = useStore('app');
-            const value = state.i18n[global.lang]?.[title] ?? title;
+            const value = state.messages[global.lang]?.[title] ?? title;
 
             return meta.extendedDocumentTitle
                 ? `${value} | ${meta.appName}`
                 : value;
         },
-        i18n: state => key => {
+        translate: state => key => {
             const lang = useStore('preferences').global.lang;
 
-            return state.i18n[lang]?.[key] ?? key;
+            return state.messages[lang]?.[key] ?? key;
         },
         isRtl: state => lang => state.rtlLanguages.includes(lang),
-        ready: state => Object.keys(state.i18n).length > 0,
+        ready: state => Object.keys(state.messages).length > 0,
         rtl: state => state.rtlLanguages.includes(useStore('preferences').global.lang),
     },
 
     actions: {
         configure({ i18n, languages, rtl }) {
-            this.i18n = i18n;
+            this.messages = i18n;
             this.languages = languages;
             this.rtlLanguages = rtl;
         },
+        set(payload) {
+            if (payload.i18n !== undefined) {
+                this.messages = payload.i18n;
+            }
+
+            if (payload.languages !== undefined) {
+                this.languages = payload.languages;
+            }
+
+            if (payload.rtlLanguages !== undefined) {
+                this.rtlLanguages = payload.rtlLanguages;
+            }
+
+            if (payload.rtl !== undefined) {
+                this.rtlLanguages = payload.rtl;
+            }
+        },
         setI18n(i18n) {
-            this.i18n = i18n;
+            this.messages = i18n;
         },
         setLanguages(languages) {
             this.languages = languages;
@@ -46,8 +63,8 @@ export const localisation = defineStore('localisation', {
             this.rtlLanguages = rtl;
         },
         addKey(key) {
-            Object.keys(this.i18n).forEach(lang => {
-                this.i18n[lang][key] = '';
+            Object.keys(this.messages).forEach(lang => {
+                this.messages[lang][key] = '';
             });
         },
         setKeyCollector(status) {
