@@ -23,7 +23,7 @@ export const localisation = defineStore('localisation', {
         translate: state => key => {
             const lang = useStore('preferences').global.lang;
 
-            return state.messages[lang]?.[key] ?? key;
+            return state.messages[lang]?.[key];
         },
         isRtl: state => lang => state.rtlLanguages.includes(lang),
         ready: state => Object.keys(state.messages).length > 0,

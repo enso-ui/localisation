@@ -17,6 +17,10 @@
     "url": "https://github.com/enso-ui/localisation/issues"
   },
   "homepage": "https://github.com/enso-ui/localisation#readme",
+  "scripts": {
+    "test": "vitest",
+    "test:run": "vitest run"
+  },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.2.0",
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
@@ -45,6 +49,7 @@
     "@enso-ui/transitions": "^2.1.0",
     "@enso-ui/ui": "^7.1.0",
     "pinia": "^3.0.3",
+    "vitest": "^3.2.4",
     "vue": "^3.5.0"
   }
 }
