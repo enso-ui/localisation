@@ -1,23 +1,61 @@
 <template>
     <div class="wrapper localisation">
         <div class="box">
-            <div class="columns">
-                <div class="column is-narrow">
+            <div class="columns is-mobile is-variable is-1">
+                <div class="column is-half-mobile is-narrow">
                     <enso-select :options="locales"
                         class="language-selector"
                         v-model="selectedLocale"
                         @update:model-value="getLangFile()"
                         :placeholder="i18n('Choose language')"/>
                 </div>
-                <div class="column has-text-centered">
-                    <fade>
-                        <p class="edit-texts-key-count"
-                            v-if="selectedLocale">
-                            <b>{{ keysCount }}</b> {{ i18n('keys found') }}
+                <div class="column is-half-mobile">
+                    <div class="field edit-texts-search"
+                        v-if="selectedLocale">
+                        <p class="control has-icons-left has-icons-right">
+                            <input id="search-input"
+                                type="text"
+                                class="input"
+                                v-focus
+                                v-select-on-focus
+                                :placeholder="i18n('Search')"
+                                v-model="query"
+                                @keyup.enter="isNewKey ? addKey() : focusIt()">
+                            <span class="icon is-small is-left has-text-muted">
+                                <fa :icon="icons.search"/>
+                            </span>
+                            <span class="icon is-small is-right clear-button has-text-muted is-clickable"
+                                v-if="query"
+                                @click="query = null">
+                                <a class="delete is-small"/>
+                            </span>
                         </p>
-                    </fade>
+                    </div>
                 </div>
-                <div class="column is-narrow">
+                 <div class="column is-half-mobile is-narrow">
+                    <div class="mt-1 px-2"
+                        v-if="selectedLocale">
+                        <vue-switch class="is-medium mr-5"
+                            v-model="filterCore">
+                            <template #before>
+                                <label class="label is-medium mr-2">
+                                    <span v-if="filterCore">{{ i18n('Core') }}</span>
+                                    <span v-else>{{ i18n('App') }}</span>
+                                </label>
+                            </template>
+                        </vue-switch>
+                        <vue-switch class="is-medium"
+                            v-model="filterMissing"
+                            size="is-medium">
+                            <template #before>
+                                <label class="label is-medium mr-2">
+                                    <span>{{ i18n('Missing') }}</span>
+                                </label>
+                            </template>
+                        </vue-switch>
+                    </div>
+                </div>
+                <div class="column is-half-mobile is-narrow">
                     <button class="button is-outlined is-info"
                         v-if="selectedLocale && isNewKey"
                         @click="addKey()">
@@ -34,58 +72,6 @@
                         :class="['button is-dark', { 'is-loading': loading }]">
                         {{ i18n('Update') }}
                     </button>
-                </div>
-            </div>
-            <div class="columns">
-                <div class="column">
-                    <fade>
-                        <div class="field edit-texts-search"
-                            v-if="selectedLocale">
-                            <p class="control has-icons-left has-icons-right">
-                                <input id="search-input"
-                                    type="text"
-                                    class="input"
-                                    v-focus
-                                    v-select-on-focus
-                                    :placeholder="i18n('Search')"
-                                    v-model="query"
-                                    @keyup.enter="isNewKey ? addKey() : focusIt()">
-                                <span class="icon is-small is-left has-text-muted">
-                                    <fa :icon="icons.search"/>
-                                </span>
-                                <span class="icon is-small is-right clear-button has-text-muted is-clickable"
-                                    v-if="query"
-                                    @click="query = null">
-                                    <a class="delete is-small"/>
-                                </span>
-                            </p>
-                        </div>
-                    </fade>
-                </div>
-                <div class="column has-text-right">
-                    <fade>
-                        <div class="is-flex is-justify-content-flex-end is-align-items-center is-flex-wrap-wrap"
-                            v-if="selectedLocale">
-                            <vue-switch class="is-medium mr-5"
-                                v-model="filterCore">
-                                <template #before>
-                                    <label class="label is-medium mr-2">
-                                        <span v-if="filterCore">{{ i18n('Core') }}</span>
-                                        <span v-else>{{ i18n('App') }}</span>
-                                    </label>
-                                </template>
-                            </vue-switch>
-                            <vue-switch class="is-medium"
-                                v-model="filterMissing"
-                                size="is-medium">
-                                <template #before>
-                                    <label class="label is-medium mr-2">
-                                        <span>{{ i18n('Only missing') }}</span>
-                                    </label>
-                                </template>
-                            </vue-switch>
-                        </div>
-                    </fade>
                 </div>
             </div>
         </div>
@@ -154,7 +140,6 @@ import { focus, selectOnFocus } from '@enso-ui/directives';
 import { EnsoPagination } from '@enso-ui/pagination/bulma';
 import { EnsoSelect } from '@enso-ui/select/bulma';
 import VueSwitch from '@enso-ui/switch/bulma';
-import { Fade } from '@enso-ui/transitions';
 import { faSearch, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
 import { app as useApp } from '@enso-ui/ui/src/pinia/app';
@@ -165,7 +150,7 @@ export default {
     directives: { focus, selectOnFocus },
 
     components: {
-        EnsoPagination, EnsoSelect, Fa, Fade, VueSwitch,
+        EnsoPagination, EnsoSelect, Fa, VueSwitch,
     },
 
     inject: ['canAccess', 'errorHandler', 'i18n', 'http', 'route', 'toastr'],

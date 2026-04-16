@@ -41,6 +41,7 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "axios": "^1.13.0",
     "@enso-ui/directives": "^3.1.0",
     "@enso-ui/dropdown": "^4.1.0",
     "@enso-ui/forms": "^4.1.0",
