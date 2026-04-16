@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { createPinia, defineStore, setActivePinia } from 'pinia';
+import App from '@enso-ui/ui/src/core/app';
 import i18n from '../i18n';
 import { localisation } from '../src/pinia/localisation';
 
@@ -27,10 +28,13 @@ const useApp = defineStore('app', {
 });
 
 describe('localisation i18n', () => {
+    let pinia;
+
     beforeEach(() => {
-        const pinia = createPinia();
+        pinia = createPinia();
 
         setActivePinia(pinia);
+        App.store = pinia;
         usePreferences(pinia);
         useApp(pinia);
         localisation(pinia);
@@ -43,7 +47,7 @@ describe('localisation i18n', () => {
     });
 
     it('returns translations when they exist', () => {
-        const store = localisation();
+        const store = localisation(pinia);
 
         store.setI18n({
             ro: {
@@ -56,7 +60,7 @@ describe('localisation i18n', () => {
     });
 
     it('falls back to the key without collecting when key collector is disabled', () => {
-        const store = localisation();
+        const store = localisation(pinia);
 
         store.setI18n({
             ro: {
@@ -70,7 +74,7 @@ describe('localisation i18n', () => {
     });
 
     it('collects missing keys exactly once when key collector is enabled', () => {
-        const store = localisation();
+        const store = localisation(pinia);
 
         store.setI18n({
             ro: {
@@ -86,7 +90,7 @@ describe('localisation i18n', () => {
     });
 
     it('interpolates params while preserving placeholder casing', () => {
-        const store = localisation();
+        const store = localisation(pinia);
 
         store.setI18n({
             ro: {
