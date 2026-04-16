@@ -1,11 +1,11 @@
-import { useStore } from './src/utils/pinia';
+import { localisation as useLocalisation } from './src/pinia/localisation';
 
 export default (key, params = null) => {
     if (key === null || key === '' || typeof key === 'undefined') {
         return null;
     }
 
-    const localisation = useStore('localisation');
+    const localisation = useLocalisation();
 
     if (!localisation?.ready) {
         return key;

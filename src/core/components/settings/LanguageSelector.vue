@@ -1,15 +1,16 @@
 <script>
-import { useStore } from '../../../utils/pinia';
+import { preferences as usePreferences } from '@enso-ui/ui/src/pinia/preferences';
+import { localisation as useLocalisation } from '../../../pinia/localisation';
 
 export default {
     name: 'LanguageSelector',
 
     computed: {
         languages() {
-            return useStore('localisation').languages;
+            return useLocalisation().languages;
         },
         lang() {
-            return useStore('preferences').global.lang;
+            return usePreferences().global.lang;
         },
         multiLanguage() {
             return Object.keys(this.languages).length > 1;
@@ -18,7 +19,7 @@ export default {
 
     methods: {
         setLang(lang) {
-            return useStore('preferences').setLang(lang);
+            return usePreferences().setLang(lang);
         },
     },
 

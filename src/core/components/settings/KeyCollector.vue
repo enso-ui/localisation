@@ -1,5 +1,6 @@
 <script>
-import { useStore } from '../../../utils/pinia';
+import { app as useApp } from '@enso-ui/ui/src/pinia/app';
+import { localisation as useLocalisation } from '../../../pinia/localisation';
 
 export default {
     name: 'KeyCollector',
@@ -10,13 +11,13 @@ export default {
 
     computed: {
         meta() {
-            return useStore('app').meta;
+            return useApp().meta;
         },
     },
 
     methods: {
         setKeyCollector(state) {
-            useStore('localisation').setKeyCollector(state);
+            useLocalisation().setKeyCollector(state);
         },
     },
 

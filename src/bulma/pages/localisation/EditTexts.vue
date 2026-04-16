@@ -140,7 +140,7 @@
                     </div>
                 </div>
             </div>
-            <enso-pagination :list="filteredKeys"
+            <enso-pagination :length="filteredKeys.length"
                 :loading="loading"
                 :page="page"
                 :page-size="pageSize"
@@ -157,7 +157,7 @@ import VueSwitch from '@enso-ui/switch/bulma';
 import { Fade } from '@enso-ui/transitions';
 import { faSearch, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
-import { useStore } from '../../../utils/pinia';
+import { app as useApp } from '@enso-ui/ui/src/pinia/app';
 
 export default {
     name: 'EditTexts',
@@ -189,7 +189,7 @@ export default {
 
     computed: {
         isLocal() {
-            return useStore('app').meta.env === 'local';
+            return useApp().meta.env === 'local';
         },
         langKeys() {
             return this.filterMissing

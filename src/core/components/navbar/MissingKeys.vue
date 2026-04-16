@@ -1,5 +1,6 @@
 <script>
-import { useStore } from '../../../utils/pinia';
+import { layout as useLayout } from '@enso-ui/ui/src/pinia/layout';
+import { localisation as useLocalisation } from '../../../pinia/localisation';
 
 export default {
     name: 'MissingKeys',
@@ -12,13 +13,13 @@ export default {
 
     computed: {
         keyCollector() {
-            return useStore('localisation').keyCollector;
+            return useLocalisation().keyCollector;
         },
         missingKeys() {
-            return useStore('localisation').missingKeys;
+            return useLocalisation().missingKeys;
         },
         isTouch() {
-            return useStore('layout').isTouch;
+            return useLayout().isTouch;
         },
         count() {
             return this.missingKeys.length;
@@ -31,10 +32,10 @@ export default {
 
     methods: {
         addKey(key) {
-            useStore('localisation').addKey(key);
+            useLocalisation().addKey(key);
         },
         clearMissingKeys() {
-            useStore('localisation').clearMissingKeys();
+            useLocalisation().clearMissingKeys();
         },
         persist() {
             this.http.patch(
