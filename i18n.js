@@ -1,23 +1,39 @@
 import { localisation as useLocalisation } from './src/pinia/localisation';
 
+const pendingMissingKeys = new Set();
+
+const invalid = key => key === null || key === '' || typeof key === 'undefined';
+
+const queueMissingKey = key => {
+    if (!pendingMissingKeys.has(key)) {
+        pendingMissingKeys.add(key);
+    
+        queueMicrotask(() => {
+            pendingMissingKeys.delete(key);
+            useLocalisation().addMissingKey(key);
+        });
+    }
+
+};
+
 export default (key, params = null) => {
-    if (key === null || key === '' || typeof key === 'undefined') {
+    if (invalid(key)) {
         return null;
     }
 
     const localisation = useLocalisation();
 
-    if (!localisation?.ready) {
+    if (!localisation.ready) {
         return key;
     }
 
     let translation = localisation.translate(key);
 
-    if (typeof translation === 'undefined' || translation === null) {
+    if (invalid(translation)) {
         translation = key;
 
         if (localisation.keyCollector) {
-            localisation.addMissingKey(key);
+            queueMissingKey(key);
         }
     }
 

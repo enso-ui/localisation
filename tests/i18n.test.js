@@ -29,6 +29,9 @@ const useApp = defineStore('app', {
 
 describe('localisation i18n', () => {
     let pinia;
+    const flushMicrotask = async () => {
+        await Promise.resolve();
+    };
 
     beforeEach(() => {
         pinia = createPinia();
@@ -73,7 +76,7 @@ describe('localisation i18n', () => {
         expect(store.missingKeys).toEqual([]);
     });
 
-    it('collects missing keys exactly once when key collector is enabled', () => {
+    it('collects missing keys exactly once when key collector is enabled', async () => {
         const store = localisation(pinia);
 
         store.setI18n({
@@ -86,6 +89,9 @@ describe('localisation i18n', () => {
 
         expect(i18n('Missing key')).toBe('Missing key');
         expect(i18n('Missing key')).toBe('Missing key');
+
+        await flushMicrotask();
+
         expect(store.missingKeys).toEqual(['Missing key']);
     });
 

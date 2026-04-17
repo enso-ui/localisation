@@ -5,19 +5,17 @@ import { localisation as useLocalisation } from '../../../pinia/localisation';
 export default {
     name: 'KeyCollector',
 
-    data: () => ({
-        collect: false,
-    }),
-
     computed: {
         meta() {
             return useApp().meta;
         },
-    },
-
-    methods: {
-        setKeyCollector(state) {
-            useLocalisation().setKeyCollector(state);
+        collect: {
+            get() {
+                return useLocalisation().keyCollector;
+            },
+            set(state) {
+                useLocalisation().setKeyCollector(state);
+            },
         },
     },
 
@@ -30,7 +28,6 @@ export default {
             events: {
                 'update:modelValue': state => {
                     this.collect = state;
-                    this.setKeyCollector(state);
                 },
             },
         });

@@ -41,6 +41,8 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "@vue/test-utils": "^2.4.6",
     "axios": "^1.13.0",
     "@enso-ui/directives": "^3.1.0",
     "@enso-ui/dropdown": "^4.1.0",
@@ -51,6 +53,7 @@
     "@enso-ui/tables": "^4.1.0",
     "@enso-ui/transitions": "^2.1.0",
     "@enso-ui/ui": "^7.1.0",
+    "jsdom": "^26.1.0",
     "pinia": "^3.0.3",
     "vitest": "^3.2.4",
     "vue": "^3.5.0"
