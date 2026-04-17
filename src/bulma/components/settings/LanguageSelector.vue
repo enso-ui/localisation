@@ -1,6 +1,6 @@
 <template>
     <core-language-selector>
-        <template #default="{ locale, languages, update, multiLanguage }">
+        <template #default="{ flagPrefix, locale, languages, update, multiLanguage }">
             <div class="level is-mobile"
                 v-if="multiLanguage">
                 <div class="level-left">
@@ -13,7 +13,7 @@
                         <dropdown>
                             <template #label>
                                 <span class="icon">
-                                    <i :class="languages[locale]"/>
+                                    <i :class="`${flagPrefix}${languages[locale]}`"/>
                                 </span>
                             </template>
                             <template #items>
@@ -22,7 +22,7 @@
                                     :selected="locale === lang"
                                     @select="update(lang)">
                                     <span class="icon is-small">
-                                        <i :class="flag"/>
+                                        <i :class="`${flagPrefix}${flag}`"/>
                                     </span>
                                 </dropdown-item>
                             </template>

@@ -1,33 +1,22 @@
 <script>
-import { preferences as usePreferences } from '@enso-ui/ui/src/pinia/preferences';
-import { localisation as useLocalisation } from '../../../pinia/localisation';
+import { preferences } from '@enso-ui/ui/src/pinia/preferences';
+import { localisation } from '../../../pinia/localisation';
 
 export default {
     name: 'LanguageSelector',
 
-    computed: {
-        languages() {
-            return useLocalisation().languages;
-        },
-        lang() {
-            return usePreferences().global.lang;
-        },
-        multiLanguage() {
-            return Object.keys(this.languages).length > 1;
-        },
-    },
-
     methods: {
         setLang(lang) {
-            return usePreferences().setLang(lang);
+            return preferences().setLang(lang);
         },
     },
 
     render() {
         return this.$slots.default({
-            multiLanguage: this.multiLanguage,
-            locale: this.lang,
-            languages: this.languages,
+            multiLanguage: Object.keys(localisation().languages).length > 1,
+            locale: preferences().global.lang,
+            languages: localisation().languages,
+            flagPrefix: localisation().flagPrefix,
             update: this.setLang,
         });
     },

@@ -32,18 +32,9 @@
                         </p>
                     </div>
                 </div>
-                 <div class="column is-half-mobile is-narrow">
+                <div class="column is-half-mobile is-narrow">
                     <div class="mt-1 px-2"
                         v-if="selectedLocale">
-                        <vue-switch class="is-medium mr-5"
-                            v-model="filterCore">
-                            <template #before>
-                                <label class="label is-medium mr-2">
-                                    <span v-if="filterCore">{{ i18n('Core') }}</span>
-                                    <span v-else>{{ i18n('App') }}</span>
-                                </label>
-                            </template>
-                        </vue-switch>
                         <vue-switch class="is-medium"
                             v-model="filterMissing"
                             size="is-medium">
@@ -60,12 +51,6 @@
                         v-if="selectedLocale && isNewKey"
                         @click="addKey()">
                         {{ i18n('Add Key') }}
-                    </button>
-                    <button class="button is-dark"
-                        v-if="!selectedLocale && isLocal
-                            && canAccess('system.localisation.merge')"
-                        @click="merge()">
-                        {{ i18n('Merge all localisation files') }}
                     </button>
                     <button @click="saveLangFile()"
                         v-if="selectedLocale"
@@ -142,7 +127,6 @@ import { EnsoSelect } from '@enso-ui/select/bulma';
 import VueSwitch from '@enso-ui/switch/bulma';
 import { faSearch, faTrashCan } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon as Fa } from '@fortawesome/vue-fontawesome';
-import { app as useApp } from '@enso-ui/ui/src/pinia/app';
 
 export default {
     name: 'EditTexts',
@@ -153,7 +137,7 @@ export default {
         EnsoPagination, EnsoSelect, Fa, VueSwitch,
     },
 
-    inject: ['canAccess', 'errorHandler', 'i18n', 'http', 'route', 'toastr'],
+    inject: ['errorHandler', 'i18n', 'http', 'route', 'toastr'],
 
     data: () => ({
         icons: {
@@ -167,15 +151,11 @@ export default {
         query: null,
         loading: false,
         filterMissing: false,
-        filterCore: true,
         page: 1,
         pageSize: 20,
     }),
 
     computed: {
-        isLocal() {
-            return useApp().meta.env === 'local';
-        },
         langKeys() {
             return this.filterMissing
                 ? Object.keys(this.originalLangFile).filter(key => !this.originalLangFile[key])
@@ -204,18 +184,12 @@ export default {
         keysCount() {
             return this.langKeys.length;
         },
-        subDir() {
-            return this.filterCore ? 'app' : 'enso';
-        },
         totalPages() {
             return Math.max(Math.ceil(this.filteredKeys.length / this.pageSize), 1);
         },
     },
 
     watch: {
-        filterCore: {
-            handler: 'getLangFile',
-        },
         filterMissing: {
             handler: 'resetPage',
         },
@@ -257,7 +231,6 @@ export default {
             this.resetPage();
 
             this.http.get(this.route('system.localisation.getLangFile', {
-                subDir: this.subDir,
                 language: this.selectedLocale,
             })).then(({ data }) => {
                 this.loading = false;
@@ -269,7 +242,6 @@ export default {
             this.loading = true;
 
             this.http.patch(this.route('system.localisation.saveLangFile', {
-                subDir: this.subDir,
                 language: this.selectedLocale,
             }), {
                 langFile: this.langFile,
@@ -300,13 +272,6 @@ export default {
         },
         updateOriginal() {
             this.originalLangFile = JSON.parse(JSON.stringify(this.langFile));
-        },
-        merge() {
-            this.http.patch(this.route('system.localisation.merge'))
-                .then(({ data }) => {
-                    this.loading = false;
-                    this.toastr.success(data.message);
-                }).catch(this.errorHandler);
         },
         sortedKeys() {
             return this.langKeys.sort((firstKey, secondKey) => {

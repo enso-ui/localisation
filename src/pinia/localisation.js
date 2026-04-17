@@ -4,7 +4,8 @@ import { preferences as usePreferences } from '@enso-ui/ui/src/pinia/preferences
 
 export const localisation = defineStore('localisation', {
     state: () => ({
-        messages: {},
+        flagPrefix: null,
+        i18n: {},
         languages: [],
         rtlLanguages: [],
         keyCollector: false,
@@ -15,7 +16,7 @@ export const localisation = defineStore('localisation', {
         documentTitle: state => title => {
             const { global } = usePreferences();
             const { meta } = useApp();
-            const value = state.messages[global.lang]?.[title] ?? title;
+            const value = state.i18n[global.lang]?.[title] ?? title;
 
             return meta.extendedDocumentTitle
                 ? `${value} | ${meta.appName}`
@@ -24,48 +25,25 @@ export const localisation = defineStore('localisation', {
         translate: state => key => {
             const lang = usePreferences().global.lang;
 
-            return state.messages[lang]?.[key];
+            return state.i18n[lang]?.[key];
         },
-        isRtl: state => lang => state.rtlLanguages.includes(lang),
-        ready: state => Object.keys(state.messages).length > 0,
+        ready: state => Object.keys(state.i18n).length > 0,
         rtl: state => state.rtlLanguages.includes(usePreferences().global.lang),
     },
 
     actions: {
-        configure({ i18n, languages, rtl }) {
-            this.messages = i18n;
+        set({ flagPrefix, i18n, languages, rtlLanguages }) {
+            this.i18n = i18n;
             this.languages = languages;
-            this.rtlLanguages = rtl;
-        },
-        set(payload) {
-            if (payload.i18n !== undefined) {
-                this.messages = payload.i18n;
-            }
-
-            if (payload.languages !== undefined) {
-                this.languages = payload.languages;
-            }
-
-            if (payload.rtlLanguages !== undefined) {
-                this.rtlLanguages = payload.rtlLanguages;
-            }
-
-            if (payload.rtl !== undefined) {
-                this.rtlLanguages = payload.rtl;
-            }
+            this.rtlLanguages = rtlLanguages;
+            this.flagPrefix = flagPrefix;
         },
         setI18n(i18n) {
-            this.messages = i18n;
-        },
-        setLanguages(languages) {
-            this.languages = languages;
-        },
-        setRtl(rtl) {
-            this.rtlLanguages = rtl;
+            this.i18n = i18n;
         },
         addKey(key) {
-            Object.keys(this.messages).forEach(lang => {
-                this.messages[lang][key] = '';
+            Object.keys(this.i18n).forEach(lang => {
+                this.i18n[lang][key] = '';
             });
         },
         setKeyCollector(status) {
