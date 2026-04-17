@@ -1,6 +1,6 @@
 <script>
-import { layout as useLayout } from '@enso-ui/ui/src/pinia/layout';
-import { localisation as useLocalisation } from '../../../pinia/localisation';
+import { layout } from '@enso-ui/ui/src/pinia/layout';
+import { localisation } from '../../../pinia/localisation';
 
 export default {
     name: 'MissingKeys',
@@ -11,50 +11,29 @@ export default {
         hover: false,
     }),
 
-    computed: {
-        keyCollector() {
-            return useLocalisation().keyCollector;
-        },
-        missingKeys() {
-            return useLocalisation().missingKeys;
-        },
-        isTouch() {
-            return useLayout().isTouch;
-        },
-        count() {
-            return this.missingKeys.length;
-        },
-        mappedKeys() {
-            return this.missingKeys
-                .map(key => ({ [key]: null }));
-        },
-    },
-
     methods: {
-        addKey(key) {
-            useLocalisation().addKey(key);
-        },
-        clearMissingKeys() {
-            useLocalisation().clearMissingKeys();
-        },
         persist() {
+            const store = localisation();
+
             this.http.patch(
                 this.route('system.localisation.addKey'),
-                { keys: this.missingKeys },
+                { keys: store.missingKeys },
             ).then(({ data }) => {
-                this.missingKeys.forEach(key => this.addKey(key));
-                this.clearMissingKeys();
+                store.missingKeys.forEach(key => store.addKey(key));
+                store.clearMissingKeys();
                 this.toastr.success(data.message);
             }).catch(this.errorHandler);
         },
     },
 
     render() {
+        const store = localisation();
+
         return this.$slots.default({
-            keyCollector: this.keyCollector,
-            isTouch: this.isTouch,
+            keyCollector: store.keyCollector,
+            isTouch: layout().isTouch,
             hover: this.hover,
-            count: this.count,
+            count: store.missingKeys.length,
             events: {
                 click: this.persist,
                 mouseenter: () => (this.hover = true),

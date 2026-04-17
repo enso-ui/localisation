@@ -181,9 +181,6 @@ export default {
                 && this.query
                 && !this.filteredKeys.includes(this.query);
         },
-        keysCount() {
-            return this.langKeys.length;
-        },
         totalPages() {
             return Math.max(Math.ceil(this.filteredKeys.length / this.pageSize), 1);
         },

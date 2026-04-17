@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
-import { app as useApp } from '@enso-ui/ui/src/pinia/app';
-import { preferences as usePreferences } from '@enso-ui/ui/src/pinia/preferences';
+import { app } from '@enso-ui/ui/src/pinia/app';
+import { preferences } from '@enso-ui/ui/src/pinia/preferences';
 
 export const localisation = defineStore('localisation', {
     state: () => ({
@@ -14,8 +14,8 @@ export const localisation = defineStore('localisation', {
 
     getters: {
         documentTitle: state => title => {
-            const { global } = usePreferences();
-            const { meta } = useApp();
+            const { global } = preferences();
+            const { meta } = app();
             const value = state.i18n[global.lang]?.[title] ?? title;
 
             return meta.extendedDocumentTitle
@@ -23,12 +23,12 @@ export const localisation = defineStore('localisation', {
                 : value;
         },
         translate: state => key => {
-            const lang = usePreferences().global.lang;
+            const lang = preferences().global.lang;
 
             return state.i18n[lang]?.[key];
         },
         ready: state => Object.keys(state.i18n).length > 0,
-        rtl: state => state.rtlLanguages.includes(usePreferences().global.lang),
+        rtl: state => state.rtlLanguages.includes(preferences().global.lang),
     },
 
     actions: {

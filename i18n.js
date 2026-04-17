@@ -1,19 +1,20 @@
-import { localisation as useLocalisation } from './src/pinia/localisation';
+import { localisation } from './src/pinia/localisation';
 
 const pendingMissingKeys = new Set();
 
 const invalid = key => key === null || key === '' || typeof key === 'undefined';
 
 const queueMissingKey = key => {
-    if (!pendingMissingKeys.has(key)) {
-        pendingMissingKeys.add(key);
-    
-        queueMicrotask(() => {
-            pendingMissingKeys.delete(key);
-            useLocalisation().addMissingKey(key);
-        });
+    if (pendingMissingKeys.has(key)) {
+        return;
     }
 
+    pendingMissingKeys.add(key);
+
+    queueMicrotask(() => {
+        pendingMissingKeys.delete(key);
+        localisation().addMissingKey(key);
+    });
 };
 
 export default (key, params = null) => {
@@ -21,18 +22,18 @@ export default (key, params = null) => {
         return null;
     }
 
-    const localisation = useLocalisation();
+    const store = localisation();
 
-    if (!localisation.ready) {
+    if (!store.ready) {
         return key;
     }
 
-    let translation = localisation.translate(key);
+    let translation = store.translate(key);
 
     if (invalid(translation)) {
         translation = key;
 
-        if (localisation.keyCollector) {
+        if (store.keyCollector) {
             queueMissingKey(key);
         }
     }
