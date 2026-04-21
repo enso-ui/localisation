@@ -1,7 +1,7 @@
 {
   "name": "@enso-ui/localisation",
   "version": "5.2.19",
-  "description": "Basic localisation package",
+  "description": "Localisation admin pages and language helpers for Enso UI",
   "main": "src/bulma/pages/localisation/Index.vue",
   "repository": {
     "type": "git",
