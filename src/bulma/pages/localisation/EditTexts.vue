@@ -111,7 +111,8 @@
                     </div>
                 </div>
             </div>
-            <enso-pagination :length="filteredKeys.length"
+            <enso-pagination class="is-small"
+                :length="filteredKeys.length"
                 :loading="loading"
                 :page="page"
                 :page-size="pageSize"

@@ -5,7 +5,9 @@
                 v-if="multiLanguage">
                 <div class="level-left">
                     <div class="level-item">
-                        {{ i18n('Language') }}
+                        <span class="menu-item-label">
+                            {{ i18n('Language') }}
+                        </span>
                     </div>
                 </div>
                 <div class="level-right">

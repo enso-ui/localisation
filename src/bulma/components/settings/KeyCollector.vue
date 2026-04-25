@@ -5,7 +5,9 @@
                 v-if="isLocal">
                 <div class="level-left">
                     <div class="level-item">
-                        {{ i18n('Key Collector') }}
+                        <span class="menu-item-label">
+                            {{ i18n('Key Collector') }}
+                        </span>
                     </div>
                 </div>
                 <div class="level-right">
