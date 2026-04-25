@@ -21,10 +21,10 @@
                                 :placeholder="i18n('Search')"
                                 v-model="query"
                                 @keyup.enter="isNewKey ? addKey() : focusIt()">
-                            <span class="icon is-small is-left has-text-muted">
+                            <span class="icon is-small is-left">
                                 <fa :icon="icons.search"/>
                             </span>
-                            <span class="icon is-small is-right clear-button has-text-muted is-clickable"
+                            <span class="icon is-small is-right clear-button is-clickable"
                                 v-if="query"
                                 @click="query = null">
                                 <a class="delete is-small"/>
