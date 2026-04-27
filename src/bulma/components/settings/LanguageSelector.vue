@@ -12,12 +12,13 @@
                 </div>
                 <div class="level-right">
                     <div class="level-item">
-                        <dropdown>
+                        <dropdown class="language-selector">
                             <template #label>
                                 <i :class="`${flagPrefix}${languages[locale]}`"/>
                             </template>
                             <template #items>
-                                <dropdown-item v-for="(flag, lang) in languages"
+                                <dropdown-item class="has-text-centered p-2"
+                                    v-for="(flag, lang) in languages"
                                     :key="lang"
                                     :selected="locale === lang"
                                     @select="update(lang)">
@@ -51,8 +52,11 @@ export default {
     @use './flags/flags';
 
     .language-selector {
-        .button .icon:first-child {
-            margin: 0;
+        .dropdown-menu {
+            .dropdown-content {
+                min-width: 3.3rem;
+                width: 100%;
+            }
         }
     }
 </style>
