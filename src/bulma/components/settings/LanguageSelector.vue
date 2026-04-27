@@ -11,12 +11,10 @@
                     </div>
                 </div>
                 <div class="level-right">
-                    <div class="level-item language-selector settings-control-select">
+                    <div class="level-item">
                         <dropdown>
                             <template #label>
-                                <span class="icon">
-                                    <i :class="`${flagPrefix}${languages[locale]}`"/>
-                                </span>
+                                <i :class="`${flagPrefix}${languages[locale]}`"/>
                             </template>
                             <template #items>
                                 <dropdown-item v-for="(flag, lang) in languages"
